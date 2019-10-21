@@ -22,9 +22,10 @@ def main():
     v = np.loadtxt(train_images_csv, delimiter=',')
     print('dividing array...')
     v = v / 255
-    b = bias()
-    print(b)
-    np.hstack((v, b))
+    v = np.c_[v, np.ones(60000)]
+    #v = np.hstack((v, np.ones(60000)))
+    print(v)
+    print('dim v: %s x %s' % (v.shape[0], v.shape[1]))
 
     # Check if csv files already exist
     norm_images_csv = path + '/../../MNIST/train_images_normalized.csv'

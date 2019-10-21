@@ -3,6 +3,7 @@ import os
 import sys
 import random
 
+NEURONS = 10
 MAXROW = 10
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -27,14 +28,27 @@ def main():
         random.seed(a=1)
         for i in range(0,785):
             w = np.append(w, random.randrange(-5,5) / 100)
+        return w
+    def init_neurons():
+        n = np.array(np.zeros(NEURONS))
+        return n
 
-
-
+    n = init_neurons()
     x, t = load()
     w = init_weights()
+    print(n)
     print(x)
     print(t)
+    print('dim w: %s' % w.shape[0])
     print(w)
+    print(x[0])
+    activation = 0
+    print(w.size, x[0].size)
+    for i in range(0,785):    # inputs
+        for j in range(0,10): # neurons
+            activation += w*x[i]
+    print(activation)
+
     output = path + '/../../MNIST/output.csv'
     #np.savetxt(fname=output, X=x, delimiter=',', fmt='%f')
 
