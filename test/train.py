@@ -3,8 +3,9 @@ import os
 import sys
 import random
 
+INPUTS = 785
 NEURONS = 10
-MAXROW = 10
+SAMPLES = 10
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -17,18 +18,26 @@ def main():
         x = np.array([])
         t = np.array([])
         print('loading input and target arrays...')
-        x = np.loadtxt(images, delimiter=',', max_rows=MAXROW)
+        x = np.loadtxt(images, delimiter=',', max_rows=SAMPLES)
         print('dim x: %s x %s' % (x.shape[0],x.shape[1]))
-        t = np.loadtxt(labels, delimiter=',', max_rows=MAXROW)
+        t = np.loadtxt(labels, delimiter=',', max_rows=SAMPLES)
         print('dim t: %s' % (t.shape[0]))
         return x, t
 
     def init_weights():
-        w = np.array([])
+        w = np.ones((SAMPLES,INPUTS))
+        print('w',w)
+        print('w[0]',w[0])
+        for i in range(0,10):
+            print(i)
         random.seed(a=1)
-        for i in range(0,785):
-            w = np.append(w, random.randrange(-5,5) / 100)
+        for i in range(0,INPUTS):
+            for j in range(0,SAMPLES):
+                print(i,j)
+                # w[i] = np.append(w[i], random.randrange(-5,5) / 100)
+                #w[i][j] = random.randrange(-5,5) / 100
         return w
+
     def init_neurons():
         n = np.array(np.zeros(NEURONS))
         return n
@@ -36,17 +45,17 @@ def main():
     n = init_neurons()
     x, t = load()
     w = init_weights()
-    print(n)
-    print(x)
-    print(t)
+    print('n',n)
+    print('x',x)
+    print('t',t)
     print('dim w: %s' % w.shape[0])
-    print(w)
-    print(x[0])
-    activation = 0
+    print('w[9]',w[9])
+    print('x[0]',x[0])
     print(w.size, x[0].size)
-    for i in range(0,785):    # inputs
-        for j in range(0,10): # neurons
-            activation += w*x[i]
+    print('x[9]',x[9])
+    for i in range(0,INPUTS):      # input vectors
+        for j in range(0,NEURONS): # neurons
+            n[j] = n[j]+w[i][j]*x[i][j]
     print(activation)
 
     output = path + '/../../MNIST/output.csv'

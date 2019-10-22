@@ -1,2 +1,2 @@
 numpy>=1.17.3
-mlxtend>=41.4.0
+mlxtend
