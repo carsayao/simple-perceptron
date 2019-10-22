@@ -1,1 +1,2 @@
-Working on adding bias to inputs.
+
+sort arrays. (ie is it x[i][j] or other way around?)
