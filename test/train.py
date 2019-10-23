@@ -25,13 +25,13 @@ def main():
         return x, t
 
     def init_weights():
-        w = np.ones((INPUTS,SAMPLES))
+        w = np.ones((SAMPLES,INPUTS))
         #print('w',w)
         print('dim w: %s x %s' % (w.shape[0],w.shape[1]))
         #print('w[0]',w[0])
         random.seed(a=1)
-        for i in range(0,INPUTS):
-            for j in range(0,SAMPLES):
+        for i in range(0,SAMPLES):
+            for j in range(0,INPUTS):
                 #print(i,j)
                 # w[i] = np.append(w[i], random.randrange(-5,5) / 100)
                 w[i][j] = random.randrange(-5,5) / 100
@@ -52,12 +52,17 @@ def main():
     print('dim t: %s' % t.shape[0])
     print('dim w: %s x %s' % (w.shape[0],w.shape[1]))
     #print('w[9]',w[9])
+    print('w',w)
+    dot = np.dot(x,w)
+    print(dot)
     #print('x[0]',x[0])
     #print('x[9]',x[9])
-    for i in range(0,INPUTS):      # input vectors
-        for j in range(0,NEURONS): # neurons
-            print('i',i,'j',j,'\tn[j]',n[j],'w[i][j]',w[i][j],'x[i][j]',x[i][j])
-            n[j] = w[i][j]*x[i][j]
+
+    # for i in range(0,INPUTS):      # input vectors
+    #     for j in range(0,NEURONS): # neurons
+    #         print('i',i,'j',j,'\tn[j]',n[j],'w[i][j]',w[i][j],'x[i][j]',x[i][j])
+    #         n[j] = w[i][j]*x[i][j]
+
     print(activation)
 
     output = path + '/../../MNIST/output.csv'
