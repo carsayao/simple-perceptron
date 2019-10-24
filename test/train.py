@@ -7,10 +7,15 @@ import random
 INPUTS = 785
 # Number of neurons
 NEURONS = 10
-# Number of examples to test
-SAMPLES = 25
+# Number of examples to train
+SAMPLES = 60000
 # Number of epochs
-EPOCHS = 5
+EPOCHS = 3
+# Learning Rate
+LR = 0.001
+# Array of epochs to store correct %
+CORRECT = []
+
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -25,7 +30,17 @@ def main():
         print('loading input and target arrays...')
         inputs = np.loadtxt(images, delimiter=',', max_rows=SAMPLES)
         targets = np.loadtxt(labels, delimiter=',', max_rows=SAMPLES)
-        return inputs, targets
+
+        target_array = np.zeros((SAMPLES, NEURONS), dtype=int)
+        for t in range(SAMPLES):
+            target_array[t][int(targets[t])] = 1
+        # print('target_array')
+        # for s in range(SAMPLES):
+        #     print(s, target_array[s])
+        #target_output = path + '/../../MNIST/target_array.csv'
+        #np.savetxt(fname=target_output, X=target_array, delimiter=',', fmt='%f')
+
+        return inputs, target_array
 
     def init_weights():
         weights = np.ones((SAMPLES,INPUTS))
@@ -39,24 +54,56 @@ def main():
         neuron = np.array(np.zeros((SAMPLES,NEURONS)))
         return neuron
 
+    def activation(neuron):
+        for n in range(SAMPLES):
+            neuron[n] = np.where(neuron[n]>=np.amax(neuron[n]),1,0)
+            print('neuron\n',neuron)
+        return neuron
 
-    # test1 = np.array([0,1,0])
-    # test2 = np.array([1,0,0])
-    # print(test1-test2)
+    #def weight_update():
+
+    #test = np.array([-.41,-.5,-.5])
+    #test1 = np.array([0,1,0])
+    #test2 = np.array([0,1,0])
+    #print((test1==test2).all())
+# ge#t prediction, then use activation function
+    #print('test\n',test,'\ntest1\n',test1,'\ntest2\n',test2)
+    #result = np.where(test>=np.amax(test),1,0)
+    #test3 = result-test1
+    #print('test1*test2',test1*test2)
+    #print(test1==test2)
+    #print((test1==test2)*1)
+    #print(np.amax(test))
+    #print(np.amax(test, keepdims=True))
+# pr#ediction array - actual array
+    #print(test-test1)
+# pr#ediction activation - actual array
+    #print(test2-test1)
+    #print(result)
+    #print('a(test)-test1\n',test3)
+    #print('\n')
+
+    
+
     neuron = init_neurons()
     inputs, targets = load()
     weights = init_weights()
+
+    print('\n')
+    
+
     #print('neuron',neuron)
     #print('inputs',inputs)
     #print('targets',targets)
     #print('targets',np.transpose(targets))
-    print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
-    print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
-    print('dim targets: %s' % targets.shape[0])
-    print('dim weights: %s x %s' % (weights.shape[0],weights.shape[1]))
+    #print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
+    #print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
+    #print('dim targets: %s' % targets.shape[0])
+    #print('dim weights: %s x %s' % (weights.shape[0],weights.shape[1]))
     #print('weights[9]',weights[9])
     #print('weights',weights)
-    activations = np.dot(inputs,np.transpose(weights))
+# calculating activations
+    #activations = np.dot(inputs,np.transpose(weights))
 
 # for each epoch
 #     for each sample
@@ -65,14 +112,48 @@ def main():
 #         if prediction is wrong
 #             weight update
 
-    # each neuron update per sample
-    neuron[0][0] = inputs[0][0]*np.transpose(weights)[0][0]
-    print(neuron[0][0])
+    print('running through epochs...')
+    for e in range(EPOCHS):
+        correct = 0
+        #print('\tsample:')
+        for s in range(SAMPLES):
+            #print('\t', s)
+            for n in range(NEURONS):
+                #neuron[s][n] = 0
+                # each neuron update per sample
+                for i in range(INPUTS):
+                    neuron[s][n] += inputs[s][i]*np.transpose(weights)[i][n]
+                # activation function
+                #print('neuron[s]',neuron[s], np.where(neuron[s]>=np.amax(neuron[s]),1,0))
+                neuron[s] = np.where(neuron[s]>=np.amax(neuron[s]),1,0)
+                #print('epoch e', e, 'sample s', s, 'neuron[s]', neuron[s], targets[s], neuron[s][n]-targets[s][n])
+            # weight update
+            if (neuron[s] == targets[s]).all():
+                #print('correct', neuron[s], targets[s])
+                correct += 1
+                continue
+            else:
+                for n in range(NEURONS):
+                    for x in range(INPUTS):
+                        #print('\tweights[s][x]',weights[s][x], '\tLR', LR, '\tneuron[s][n]',neuron[s][n],'\ttargets[s][n]',targets[s][n],'\tinputs[s][x]\t',inputs[s][x])
+                        weights[s][x] -= LR*(neuron[s][n]-targets[s][n])*inputs[s][x]
+                        #print('\t\tafter w_update',weights[s][x])
+            #print('\n')
+        print('correct/SAMPLES', correct, SAMPLES, correct/SAMPLES)
+        CORRECT.append(correct/SAMPLES)
+    print('\nLR:', LR, '\nCORRECT:',CORRECT, '\nEPOCHS:', EPOCHS)
+    save_weights = path + '/../../MNIST/saved_weights.csv'
+    np.savetxt(fname=save_weights, X=weights, delimiter=',', fmt='%f')
+    #output = path + '/../../MNIST/activation_on_neurons.csv'
+    #output1 = path + '/../../MNIST/activation.csv'
+    #print('saving to csv...')
+    #np.savetxt(fname=output, X=neuron, delimiter=',', fmt='%f')
+    #np.savetxt(fname=output1, X=a, delimiter=',', fmt='%f')
 
 
     #activations = np.where(activations>0,1,0)
-    print('inputs * weights^T')
-    print('dim activations: %s x %s' % (activations.shape[0],activations.shape[1]))
+    #print('inputs * weights^T')
+    #print('dim activations: %s x %s' % (activations.shape[0],activations.shape[1]))
     #weights -= 0.25*np.dot(np.transpose(inputs),activations-np.transpose(targets))
 
     #print('inputs[0]',inputs[0])
@@ -87,9 +168,6 @@ def main():
     #         neuron[j] = weights[i][j]*x[i][j]
 
     #print(activation)
-
-    output = path + '/../../MNIST/output.csv'
-    np.savetxt(fname=output, X=activations, delimiter=',', fmt='%f')
 
     # # Check if csv files already exist
     # norm_images = path + '/../../MNIST/train_images_normalized_10000.csv'
