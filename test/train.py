@@ -5,7 +5,7 @@ import random
 
 INPUTS = 785
 NEURONS = 10
-SAMPLES = 20
+SAMPLES = 25
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -15,58 +15,80 @@ def main():
         images = path + '/../../MNIST/train_images_normalized.csv'
         labels = path + '/../../MNIST/train_labels.csv'
 
-        x = np.array([])
+        inputs = np.array([])
         t = np.array([])
         print('loading input and target arrays...')
-        x = np.loadtxt(images, delimiter=',', max_rows=SAMPLES)
-        print('dim x: %s x %s' % (x.shape[0],x.shape[1]))
+        inputs = np.loadtxt(images, delimiter=',', max_rows=SAMPLES)
+        print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
         t = np.loadtxt(labels, delimiter=',', max_rows=SAMPLES)
         print('dim t: %s' % (t.shape[0]))
-        return x, t
+        return inputs, t
 
     def init_weights():
-        w = np.ones((SAMPLES,INPUTS))
-        #print('w',w)
-        print('dim w: %s x %s' % (w.shape[0],w.shape[1]))
-        #print('w[0]',w[0])
+        weight = np.ones((SAMPLES,INPUTS))
+        #print('weight',weight)
+        print('dim weight: %s x %s' % (weight.shape[0],weight.shape[1]))
+        #print('weight[0]',weight[0])
         random.seed(a=1)
         for i in range(0,SAMPLES):
             for j in range(0,INPUTS):
                 #print(i,j)
-                # w[i] = np.append(w[i], random.randrange(-5,5) / 100)
-                w[i][j] = random.randrange(-5,5) / 100
-        return w
+                # weight[i] = np.append(weight[i], random.randrange(-5,5) / 100)
+                weight[i][j] = random.randrange(-5,5) / 100
+        return weight
 
     def init_neurons():
-        n = np.array(np.zeros(NEURONS))
-        return n
+        neuron = np.array(np.zeros((SAMPLES,NEURONS)))
+        return neuron
 
-    n = init_neurons()
-    x, t = load()
-    w = init_weights()
-    #print('n',n)
-    #print('x',x)
+
+    # test1 = np.array([0,1,0])
+    # test2 = np.array([1,0,0])
+    # print(test1-test2)
+    neuron = init_neurons()
+    inputs, t = load()
+    weight = init_weights()
+    #print('neuron',neuron)
+    #print('inputs',inputs)
     #print('t',t)
-    print('dim n: %s' % n.shape[0])
-    print('dim x: %s x %s' % (x.shape[0],x.shape[1]))
+    #print('t',np.transpose(t))
+    print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
+    print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
     print('dim t: %s' % t.shape[0])
-    print('dim w: %s x %s' % (w.shape[0],w.shape[1]))
-    #print('w[9]',w[9])
-    print('w',w)
-    activations = np.dot(x,np.transpose(w))
-    activations = np.where(activations>0,1,0)
-    #print('x[0]',x[0])
-    #print('x[9]',x[9])
+    print('dim weight: %s x %s' % (weight.shape[0],weight.shape[1]))
+    #print('weight[9]',weight[9])
+    #print('weight',weight)
+    activations = np.dot(inputs,np.transpose(weight))
 
-    for i in range(SAMPLES):      # input vectors
-        for j in range(NEURONS): # neurons
-            activation[i][j] = 0
-            for k in range(INPUTS):
-                activation[i][j] += x[k][j] * x[i][k]
+# for each epoch
+#     for each sample
+#         calculate array of neurons
+#         highest is prediction
+#         if prediction is wrong
+#             weight update
+
+    # each neuron update per sample
+    neuron[0][0] = inputs[0][0]*np.transpose(weight)[0][0]
+    print(neuron[0][0])
+
+
+    #activations = np.where(activations>0,1,0)
+    print('inputs * weight^T')
+    print('dim activations: %s x %s' % (activations.shape[0],activations.shape[1]))
+    #weight -= 0.25*np.dot(np.transpose(inputs),activations-np.transpose(t))
+
+    #print('inputs[0]',inputs[0])
+    #print('inputs[9]',inputs[9])
+
+    # for i in range(SAMPLES):      # input vectors
+    #     for j in range(NEURONS): # neurons
+    #         activation[i][j] = 0
+    #         for k in range(INPUTS):
+    #             activation[i][j] += x[k][j] * x[i][k]
     #         print('i',i,'j',j,'\tn[j]',n[j],'w[i][j]',w[i][j],'x[i][j]',x[i][j])
-    #         n[j] = w[i][j]*x[i][j]
+    #         neuron[j] = weight[i][j]*x[i][j]
 
-    print(activations)
+    #print(activation)
 
     output = path + '/../../MNIST/output.csv'
     np.savetxt(fname=output, X=activations, delimiter=',', fmt='%f')
