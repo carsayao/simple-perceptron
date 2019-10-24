@@ -5,7 +5,7 @@ import random
 
 INPUTS = 785
 NEURONS = 10
-SAMPLES = 10
+SAMPLES = 20
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -53,20 +53,23 @@ def main():
     print('dim w: %s x %s' % (w.shape[0],w.shape[1]))
     #print('w[9]',w[9])
     print('w',w)
-    dot = np.dot(x,w)
-    print(dot)
+    activations = np.dot(x,np.transpose(w))
+    activations = np.where(activations>0,1,0)
     #print('x[0]',x[0])
     #print('x[9]',x[9])
 
-    # for i in range(0,INPUTS):      # input vectors
-    #     for j in range(0,NEURONS): # neurons
+    for i in range(SAMPLES):      # input vectors
+        for j in range(NEURONS): # neurons
+            activation[i][j] = 0
+            for k in range(INPUTS):
+                activation[i][j] += x[k][j] * x[i][k]
     #         print('i',i,'j',j,'\tn[j]',n[j],'w[i][j]',w[i][j],'x[i][j]',x[i][j])
     #         n[j] = w[i][j]*x[i][j]
 
-    print(activation)
+    print(activations)
 
     output = path + '/../../MNIST/output.csv'
-    #np.savetxt(fname=output, X=x, delimiter=',', fmt='%f')
+    np.savetxt(fname=output, X=activations, delimiter=',', fmt='%f')
 
     # # Check if csv files already exist
     # norm_images = path + '/../../MNIST/train_images_normalized_10000.csv'
