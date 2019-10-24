@@ -3,9 +3,14 @@ import os
 import sys
 import random
 
+# Number of inputs
 INPUTS = 785
+# Number of neurons
 NEURONS = 10
+# Number of examples to test
 SAMPLES = 25
+# Number of epochs
+EPOCHS = 5
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -16,26 +21,19 @@ def main():
         labels = path + '/../../MNIST/train_labels.csv'
 
         inputs = np.array([])
-        t = np.array([])
+        targets = np.array([])
         print('loading input and target arrays...')
         inputs = np.loadtxt(images, delimiter=',', max_rows=SAMPLES)
-        print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
-        t = np.loadtxt(labels, delimiter=',', max_rows=SAMPLES)
-        print('dim t: %s' % (t.shape[0]))
-        return inputs, t
+        targets = np.loadtxt(labels, delimiter=',', max_rows=SAMPLES)
+        return inputs, targets
 
     def init_weights():
-        weight = np.ones((SAMPLES,INPUTS))
-        #print('weight',weight)
-        print('dim weight: %s x %s' % (weight.shape[0],weight.shape[1]))
-        #print('weight[0]',weight[0])
+        weights = np.ones((SAMPLES,INPUTS))
         random.seed(a=1)
         for i in range(0,SAMPLES):
             for j in range(0,INPUTS):
-                #print(i,j)
-                # weight[i] = np.append(weight[i], random.randrange(-5,5) / 100)
-                weight[i][j] = random.randrange(-5,5) / 100
-        return weight
+                weights[i][j] = random.randrange(-5,5) / 100
+        return weights
 
     def init_neurons():
         neuron = np.array(np.zeros((SAMPLES,NEURONS)))
@@ -46,19 +44,19 @@ def main():
     # test2 = np.array([1,0,0])
     # print(test1-test2)
     neuron = init_neurons()
-    inputs, t = load()
-    weight = init_weights()
+    inputs, targets = load()
+    weights = init_weights()
     #print('neuron',neuron)
     #print('inputs',inputs)
-    #print('t',t)
-    #print('t',np.transpose(t))
+    #print('targets',targets)
+    #print('targets',np.transpose(targets))
     print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
     print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
-    print('dim t: %s' % t.shape[0])
-    print('dim weight: %s x %s' % (weight.shape[0],weight.shape[1]))
-    #print('weight[9]',weight[9])
-    #print('weight',weight)
-    activations = np.dot(inputs,np.transpose(weight))
+    print('dim targets: %s' % targets.shape[0])
+    print('dim weights: %s x %s' % (weights.shape[0],weights.shape[1]))
+    #print('weights[9]',weights[9])
+    #print('weights',weights)
+    activations = np.dot(inputs,np.transpose(weights))
 
 # for each epoch
 #     for each sample
@@ -68,14 +66,14 @@ def main():
 #             weight update
 
     # each neuron update per sample
-    neuron[0][0] = inputs[0][0]*np.transpose(weight)[0][0]
+    neuron[0][0] = inputs[0][0]*np.transpose(weights)[0][0]
     print(neuron[0][0])
 
 
     #activations = np.where(activations>0,1,0)
-    print('inputs * weight^T')
+    print('inputs * weights^T')
     print('dim activations: %s x %s' % (activations.shape[0],activations.shape[1]))
-    #weight -= 0.25*np.dot(np.transpose(inputs),activations-np.transpose(t))
+    #weights -= 0.25*np.dot(np.transpose(inputs),activations-np.transpose(targets))
 
     #print('inputs[0]',inputs[0])
     #print('inputs[9]',inputs[9])
@@ -86,7 +84,7 @@ def main():
     #         for k in range(INPUTS):
     #             activation[i][j] += x[k][j] * x[i][k]
     #         print('i',i,'j',j,'\tn[j]',n[j],'w[i][j]',w[i][j],'x[i][j]',x[i][j])
-    #         neuron[j] = weight[i][j]*x[i][j]
+    #         neuron[j] = weights[i][j]*x[i][j]
 
     #print(activation)
 
