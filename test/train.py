@@ -97,10 +97,10 @@ def main():
     #print('inputs',inputs)
     #print('targets',targets)
     #print('targets',np.transpose(targets))
-    #print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
-    #print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
-    #print('dim targets: %s' % targets.shape[0])
-    #print('dim weights: %s x %s' % (weights.shape[0],weights.shape[1]))
+    print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
+    print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
+    print('dim targets: %s x %s' % (targets.shape[0],targets.shape[1]))
+    print('dim weights: %s x %s' % (weights.shape[0],weights.shape[1]))
     #print('weights[9]',weights[9])
     #print('weights',weights)
 # calculating activations
@@ -124,7 +124,7 @@ def main():
                 #neuron[s][n] = 0
                 # each neuron update per sample
                 for i in range(INPUTS):
-                    neuron[s][n] += inputs[s][i]*np.transpose(weights)[i][n]
+                    neuron[s] = np.dot(np.transpose(weights)[i][n],inputs[s][i])
                 # activation function
                 #print('neuron[s]',neuron[s], np.where(neuron[s]>=np.amax(neuron[s]),1,0))
                 neuron[s] = np.where(neuron[s]>=np.amax(neuron[s]),1,0)
@@ -138,7 +138,7 @@ def main():
                     if targets[n][a] == 1:
                         actual = a
                         break
-                print('incorrect', prediction, actual)
+                #print('incorrect', prediction, actual)
                 confusion[prediction][actual] += 1
             
             # weight update
