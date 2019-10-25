@@ -23,7 +23,7 @@ def main():
 
     def load():
         images = path + '/../../MNIST/train_images_normalized.csv'
-        labels = path + '/../../MNIST/train_labels.csv'
+        labels = path + '/../../MNIST/train_labels_array.csv'
 
         inputs = np.array([])
         targets = np.array([])
@@ -31,23 +31,16 @@ def main():
         inputs = np.loadtxt(images, delimiter=',', max_rows=SAMPLES)
         targets = np.loadtxt(labels, delimiter=',', max_rows=SAMPLES)
 
-        target_array = np.zeros((SAMPLES, NEURONS), dtype=int)
-        for t in range(SAMPLES):
-            target_array[t][int(targets[t])] = 1
         # print('target_array')
         # for s in range(SAMPLES):
         #     print(s, target_array[s])
         #target_output = path + '/../../MNIST/target_array.csv'
         #np.savetxt(fname=target_output, X=target_array, delimiter=',', fmt='%f')
 
-        return inputs, target_array
+        return inputs, targets
 
     def init_weights():
-        weights = np.ones((SAMPLES,INPUTS))
-        random.seed(a=1)
-        for i in range(0,SAMPLES):
-            for j in range(0,INPUTS):
-                weights[i][j] = random.randrange(-5,5) / 100
+        weights = np.random.randint(-50,high=50,size=(INPUTS,NEURONS)) / 1000
         return weights
 
     def init_neurons():
@@ -99,8 +92,11 @@ def main():
     #print('targets',np.transpose(targets))
     print('dim neuron: %s x %s' % (neuron.shape[0],neuron.shape[1]))
     print('dim inputs: %s x %s' % (inputs.shape[0],inputs.shape[1]))
+    # print('dim inputs[0]: %s x %s' % inputs[0].shape[0])
     print('dim targets: %s x %s' % (targets.shape[0],targets.shape[1]))
     print('dim weights: %s x %s' % (weights.shape[0],weights.shape[1]))
+    w_t = np.transpose(weights)
+    print('dim weights: %s x %s' % (w_t.shape[0],w_t.shape[1]))
     #print('weights[9]',weights[9])
     #print('weights',weights)
 # calculating activations
@@ -118,29 +114,34 @@ def main():
     for e in range(EPOCHS):
         correct = 0
         #print('\tsample:')
-        for s in range(SAMPLES):
-            #print('\t', s)
-            for n in range(NEURONS):
+        for n in range(NEURONS):
+            neuron = np.dot(inputs,weights)
+            np.savetxt(fname=path+'/../../MNIST/output.csv', X=neuron, delimiter=',', fmt='%f')
+            for N in range(SAMPLES):
+                #print('\t', s)
+                np.set_printoptions(threshold=sys.maxsize)
+                neuron[N] = np.where(neuron[N]>=np.amax(neuron[N]),1,0)
+            # for n in range(NEURONS):
                 #neuron[s][n] = 0
                 # each neuron update per sample
-                for i in range(INPUTS):
-                    neuron[s] = np.dot(np.transpose(weights)[i][n],inputs[s][i])
+                # for i in range(INPUTS):
                 # activation function
                 #print('neuron[s]',neuron[s], np.where(neuron[s]>=np.amax(neuron[s]),1,0))
-                neuron[s] = np.where(neuron[s]>=np.amax(neuron[s]),1,0)
                 #print('epoch e', e, 'sample s', s, 'neuron[s]', neuron[s], targets[s], neuron[s][n]-targets[s][n])
 
-                for p in range(NEURONS):
-                    if neuron[n][p] == 1:
-                        prediction = p
-                        break
-                for a in range(NEURONS):
-                    if targets[n][a] == 1:
-                        actual = a
-                        break
+                # for p in range(NEURONS):
+                #     if neuron[n][p] == 1:
+                #         prediction = p
+                #         break
+                # for a in range(NEURONS):
+                #     if targets[n][a] == 1:
+                #         actual = a
+                #         break
+
                 #print('incorrect', prediction, actual)
-                confusion[prediction][actual] += 1
+                # confusion[prediction][actual] += 1
             
+            np.savetxt(fname=path+'/../../MNIST/output1.csv', X=neuron, delimiter=',', fmt='%f')
             # weight update
             if (neuron[s] == targets[s]).all():
                 print('correct', neuron[s], targets[s])

@@ -5,6 +5,18 @@ import numpy as np
 import os
 import sys
 
+# Number of inputs
+INPUTS = 785
+# Number of neurons
+NEURONS = 10
+# Number of examples to train
+SAMPLES = 60000
+# Number of epochs
+EPOCHS = 3
+# Learning Rate
+LR = 0.001
+# Array of epochs to store correct %
+CORRECT = []
 
 def main():
 
@@ -22,22 +34,26 @@ def main():
 
     # Check if csv files already exist
     train_images_csv = path + '/../../MNIST/train_images.csv'
-    train_labels_csv = path + '/../../MNIST/train_labels.csv'
-    exists = os.path.isfile(train_images_csv)
-    if exists:
-        print('csv files already exist')
-    else:
+    train_labels_csv = path + '/../../MNIST/train_labels_array.csv'
 
-        try:
-            print('saving as csvs...')
-            np.savetxt(fname=train_images_csv, X=x, delimiter=',', fmt='%d')
-            np.savetxt(fname=train_labels_csv, X=y, delimiter=',', fmt='%d')
-        except OSError as e:
-            print('files not saved!')
-            print(e.strerror)
-            sys.exit(0)
-        else:
-            print('save successful!')
+    target_array = np.zeros((SAMPLES, NEURONS), dtype=int)
+    for t in range(SAMPLES):
+        target_array[t][int(y[t])] = 1
+
+    # exists = os.path.isfile(train_images_csv)
+    # if exists:
+    #     print('csv files already exist')
+    # else:
+    try:
+        print('saving as csvs...')
+        np.savetxt(fname=train_images_csv, X=x, delimiter=',', fmt='%d')
+        np.savetxt(fname=train_labels_csv, X=target_array, delimiter=',', fmt='%d')
+    except OSError as e:
+        print('files not saved!')
+        print(e.strerror)
+        sys.exit(0)
+    else:
+        print('save successful!')
 
 if __name__ == "__main__":
     main()
