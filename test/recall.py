@@ -43,11 +43,12 @@ def main():
         return inputs, target_array
 
     def init_weights():
-        weights = np.ones((SAMPLES,INPUTS))
-        random.seed(a=1)
-        for i in range(0,SAMPLES):
-            for j in range(0,INPUTS):
-                weights[i][j] = random.randrange(-5,5) / 100
+        saved_weights = path + '/../../MNIST/saved_weights.csv'
+
+        weights = np.ones([])
+        print('loading weights...')
+        weights = np.loadtxt(saved_weights, delimiter=',', max_rows=SAMPLES)
+
         return weights
 
     def init_neurons():
@@ -64,12 +65,11 @@ def main():
 
     #test = np.array([-.41,-.5,-.5])
     #test1 = np.array([0,1,0])
-    test2 = np.array([0,1,0])
+    #test2 = np.array([0,1,0])
     #print((test1==test2).all())
 # ge#t prediction, then use activation function
     #print('test\n',test,'\ntest1\n',test1,'\ntest2\n',test2)
     #result = np.where(test>=np.amax(test),1,0)
-    result = np.where(test2==1,1,0)
     #test3 = result-test1
     #print('test1*test2',test1*test2)
     #print(test1==test2)
@@ -80,7 +80,7 @@ def main():
     #print(test-test1)
 # pr#ediction activation - actual array
     #print(test2-test1)
-    print(result)
+    #print(result)
     #print('a(test)-test1\n',test3)
     #print('\n')
 
@@ -138,31 +138,26 @@ def main():
                     if targets[n][a] == 1:
                         actual = a
                         break
-                print('incorrect', prediction, actual)
+                #print('incorrect', prediction, actual)
                 confusion[prediction][actual] += 1
             
             # weight update
             if (neuron[s] == targets[s]).all():
-                print('correct', neuron[s], targets[s])
+                #print('correct', neuron[s], targets[s])
                 correct += 1
                 continue
-            else:
-                for n in range(NEURONS):
-                    prediction = 0
-                    actual = 0
-                    for x in range(INPUTS):
-                        #print('\tweights[s][x]',weights[s][x], '\tLR', LR, '\tneuron[s][n]',neuron[s][n],'\ttargets[s][n]',targets[s][n],'\tinputs[s][x]\t',inputs[s][x])
-                        weights[s][x] -= LR*(neuron[s][n]-targets[s][n])*inputs[s][x]
-                        #print('\t\tafter w_update',weights[s][x])
+            # else:
+            #     for n in range(NEURONS):
+            #         for x in range(INPUTS):
+            #             #print('\tweights[s][x]',weights[s][x], '\tLR', LR, '\tneuron[s][n]',neuron[s][n],'\ttargets[s][n]',targets[s][n],'\tinputs[s][x]\t',inputs[s][x])
+            #             weights[s][x] -= LR*(neuron[s][n]-targets[s][n])*inputs[s][x]
+            #             #print('\t\tafter w_update',weights[s][x])
             #print('\n')
         print('correct/SAMPLES', correct, SAMPLES, correct/SAMPLES)
         CORRECT.append(correct/SAMPLES)
-    print(confusion)
     print('\nLR:', LR, '\nCORRECT:',CORRECT, '\nEPOCHS:', EPOCHS)
-    save_confusion = path + '/../../MNIST/saved_recall_confusion.csv'
-    np.savetxt(fname=save_confusion, X=confusion, delimiter=',', fmt='%f')
-    #save_weights = path + '/../../MNIST/saved_weights.csv'
-    #np.savetxt(fname=save_weights, X=weights, delimiter=',', fmt='%f')
+    save_weights = path + '/../../MNIST/saved_weights.csv'
+    np.savetxt(fname=save_weights, X=weights, delimiter=',', fmt='%f')
     #output = path + '/../../MNIST/activation_on_neurons.csv'
     #output1 = path + '/../../MNIST/activation.csv'
     #print('saving to csv...')
