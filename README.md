@@ -8,7 +8,7 @@ Run `train.py`. Takes 2 arguments: learning rate and epochs.
 
 Both files assume `/MNIST/` in repo directory.
 
-## How to set up and use `virtual env`
+## `virtual env`
 
     pip3 install virtualenv
 
