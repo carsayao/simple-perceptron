@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import os
 import sys
 
 # Number of inputs
@@ -92,3 +93,28 @@ if sys.argv[1] == 'test weights':
 if sys.argv[1] == 'test loop':
     for x in range(NEURONS):
         print(x)
+
+if sys.argv[1] == 'test memmap':
+    np.set_printoptions(threshold=sys.maxsize)
+    path = os.path.dirname(os.path.realpath(__file__))
+    filename = path + '/../../MNIST/train_labels_array.csv'
+    memmap = path + '/../../MNIST/train_labels_array.dat'
+
+    # Load from csv
+    array = np.loadtxt(filename, delimiter=',', max_rows=SAMPLES)
+    # Save to dat
+    fp = np.memmap(memmap, dtype='float32', mode='w+', shape=(SAMPLES,NEURONS))
+    fp[:] = array[:]
+    # Load from dat
+    newfp = np.memmap(memmap, dtype='float32', mode='r+', shape=(SAMPLES,NEURONS))
+    newfp_csv = path + '/../../MNIST/train_labels_array_from_dat.csv'
+    np.savetxt(fname=newfp_csv, X=newfp, delimiter=',', fmt='%f')
+
+if sys.argv[1] == 'test size':
+    arr = np.zeros((20,10))
+    print(arr.size)
+    print(arr.shape)
+    print(int(arr.shape[0]))
+    num = int(arr.shape[0])
+    print(num)
+    print(arr[1].size)
