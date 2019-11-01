@@ -18,7 +18,7 @@ This will install virtualenv using pip3 and create a an `env` folder that will c
 
     source env/bin/activate
 
-This will put your shell into the virtual environment where you will have the libraries brought it. *(Note: doesn't work with fish)*
+This will put your shell into the virtual environment where you will have the libraries brought it. *(Note: fish* `. env/bin/activate.fish*)*
 
     pip3 install -r requirements.txt
 
