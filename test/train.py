@@ -10,9 +10,11 @@ NEURONS = 10
 # Number of examples to train
 SAMPLES = 60000
 # Number of epochs
-EPOCHS = int(sys.argv[2])
+# EPOCHS = int(sys.argv[2])
+EPOCHS = 10
 # Learning Rate
-LR = float(sys.argv[1])
+# LR = float(sys.argv[1])
+LR = 0.01
 # Array of epochs to store correct %
 CORRECT = []
 
@@ -42,6 +44,7 @@ def main():
 
     def init_weights():
         weights = np.random.randint(-50,high=50,size=(INPUTS,NEURONS)) / 1000
+        print("weights[0]\n", weights[0])
         return weights
 
     def init_neurons():

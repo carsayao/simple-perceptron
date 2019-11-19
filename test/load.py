@@ -20,10 +20,10 @@ LR = 0.001
 # Array of epochs to store correct %
 CORRECT = []
 # Relative paths
-train_images_raw = '/../MNIST/rawdata/train-images.idx3-ubyte'
-train_labels_raw = '/../MNIST/rawdata/train-labels.idx1-ubyte'
-test_images_raw = '/../MNIST/rawdata/t10k-images.idx3-ubyte'
-test_labels_raw = '/../MNIST/rawdata/t10k-labels.idx1-ubyte'
+train_images_raw = '/../../MNIST/rawdata/train-images.idx3-ubyte'
+train_labels_raw = '/../../MNIST/rawdata/train-labels.idx1-ubyte'
+test_images_raw =  '/../../MNIST/rawdata/t10k-images.idx3-ubyte'
+test_labels_raw =  '/../../MNIST/rawdata/t10k-labels.idx1-ubyte'
 
 def main():
 
@@ -59,7 +59,6 @@ def main():
     # print('labels: %s' % np.unique(y))
     # print('Class distribution: %s' % np.bincount(y))
 
-    # Check if csv files already exist
     train_images_csv = path + '/../MNIST/train_images.csv'
     train_labels_csv = path + '/../MNIST/train_labels.csv'
     train_images_dat = path + '/../MNIST/train_images.dat'
@@ -125,6 +124,7 @@ def main():
         sys.exit(0)
     print('save successful!')
 
+    # Test reading .dat files
     newfp0 = np.memmap(train_images_dat, dtype='float32',
                        mode='r+', shape=(SAMPLES,INPUTS))
     np.set_printoptions(threshold=sys.maxsize)
